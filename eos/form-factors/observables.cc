@@ -3202,6 +3202,24 @@ namespace eos
                 make_observable("0->pipi::Arg{f_+}(Re{psi},Im{psi})@BHKMNR2026", R"(\textrm{Arg}(f_+^{0\to\pi\pi}(\psi)))", Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::arg_f_p_of_psi, std::make_tuple("Re{psi}", "Im{psi}")),
 
+                make_observable("0->pipi::a0@BHKMNR2026", R"(a_0)", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::a_0),
+
+                make_observable("0->pipi::a1@BHKMNR2026", R"(a_1)", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::a_1),
+
+                make_observable("0->pipi::a2@BHKMNR2026", R"(a_2)", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::a_2),
+
+                make_observable("0->pipi::a3@BHKMNR2026", R"(a_3)", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::a_3),
+
+                make_observable("0->pipi::realP@BHKMNR2026", R"(\textrm{realP})", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::realP, std::make_tuple("q2")),
+
+                make_observable("0->pipi::imagP@BHKMNR2026", R"(\textrm{imagP})", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::imagP, std::make_tuple("q2")),
+
                 make_observable("0->pipi::Re{t_1^1}(q2)@BHKMNR2026", R"(\textrm{Re}(t_1^{1, 0\to \pi\pi}(q^2)))",
                         Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::re_partial_wave, std::make_tuple("q2")),
@@ -3221,6 +3239,12 @@ namespace eos
 
                 make_observable("0->pipi::Saturation@BHKMNR2026", R"(\textrm{Saturation})", Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::saturation),
+
+                 make_observable("0->pipi::Re{Res_psi{f_+}}@BHKMNR2026", R"(\textrm{Re}\,\textrm{Res}_{\psi} (s_\rho^2)\,f_+^{0\to\pi\pi})", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::re_residue_rho),
+
+                make_observable("0->pipi::Im{Res_psi{f_+}}@BHKMNR2026", R"(\textrm{Im}\,\textrm{Res}_{\psi} (s_\rho^2)\,f_+^{0\to\pi\pi})", Unit::None(),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::im_residue_rho),
             }
         );
 
