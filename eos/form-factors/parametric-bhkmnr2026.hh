@@ -218,7 +218,7 @@ namespace eos
             {
 
                 const std::size_t num_resonances = stoi(_n_resonances.value());
-                complex<double> result  = power_of<2>(psi - 1.0);
+                complex<double> result  = power_of<2>(psi - 1.0) * (psi + 1.0);
 
                 for (auto i = 0u; i < num_resonances; i++)
                 {
@@ -238,7 +238,7 @@ namespace eos
                     throw InternalError("The residue index must be smaller than the number of used resonances.");
 
                 complex<double> psi_residue   = _psi_r(_M_fp_I1[k](), _G_fp_I1[k]());
-                complex<double> result        = power_of<2>(psi_residue - 1.0) / (psi_residue - std::conj(psi_residue));
+                complex<double> result        = power_of<2>(psi_residue - 1.0) * (psi_residue + 1.0) / (psi_residue - std::conj(psi_residue));
 
                 for (auto i = 0u; i < num_resonances; i++)
                 {
@@ -271,7 +271,7 @@ namespace eos
                     sum += (2.0 * psi - psi_r - std::conj(psi_r)) / denom;
                 }
 
-                return P_val * (2.0 / (psi - 1.0) - sum);
+                return P_val * ((1.0  + 3.0 * psi) / (power_of<2>(psi) - 1.0) - sum);
             }
 
 
@@ -308,9 +308,9 @@ namespace eos
 
                 const complex<double> P_val = _P(psi);
 
-                std::complex<double> L  =  2.0 / (psi - 1.0);
-                std::complex<double> L1 = -2.0 / power_of<2>(psi - 1.0);
-                std::complex<double> L2 =  4.0 / power_of<3>(psi - 1.0);
+                std::complex<double> L  =  2.0 / (psi - 1.0) + 1.0 / (psi + 1.0);
+                std::complex<double> L1 = -2.0 / power_of<2>(psi - 1.0) - 1.0 / power_of<2>(psi + 1.0);
+                std::complex<double> L2 =  4.0 / power_of<3>(psi - 1.0) + 2.0 / power_of<3>(psi + 1.0);
 
                 for (std::size_t i = 0; i < num_resonances; ++i)
                 {

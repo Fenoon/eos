@@ -332,6 +332,7 @@ namespace eos
         std::copy(_a_fp_I1.cbegin(), _a_fp_I1.cend(), a.begin() + 4);       // copy unconstrained coefficients
 
         return P * this->series(psi, a);
+
     }
 
 
