@@ -30,8 +30,11 @@
 #include <eos/utils/reference-name.hh>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_poly.h>
 
 #include <array>
+#include <iostream>
+
 
 namespace eos
 {
@@ -61,6 +64,7 @@ namespace eos
             gsl_vector * _L;
             gsl_permutation * _perm;
             gsl_vector * _constrained_coefficents;
+            gsl_poly_complex_workspace * _poly_workspace;
 
             inline std::string _par_name(const std::string & ff, const std::string & isospin, const std::string & index) const
             {
@@ -90,10 +94,10 @@ namespace eos
             inline complex<double> _s_to_phi_11(const complex<double> & s, const complex<double> & s_in) const
             {
                 const complex<double> s_p = _s_p();
-                const double  eps = 1e-14;
+                const double eps = 1e-10;
 
                 if (std::abs(s - s_p) < eps)
-                    return 0.0;
+                    return complex<double>(0.0);
 
                 return (std::sqrt(s_in - s) - std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
             }
@@ -102,10 +106,10 @@ namespace eos
             inline complex<double> _s_to_phi_21(const complex<double> & s, const complex<double> & s_in) const
             {
                 const complex<double> s_p = _s_p();
-                const double  eps = 1e-14;
+                const double  eps = 1e-10;
 
                 if (std::abs(s - s_p ) < eps)
-                    return 0.0;
+                    return complex<double>(0.0);
 
                 return (- std::sqrt(s_in - s) + std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
             }
@@ -115,10 +119,10 @@ namespace eos
             inline complex<double> _s_to_phi_22(const complex<double> & s, const complex<double> & s_in) const
             {
                 const complex<double> s_p = _s_p();
-                const double  eps = 1e-14;
+                const double  eps = 1e-10;
 
                 if (std::abs(s - s_p ) < eps)
-                    return 0.0;
+                    return complex<double>(0.0);
 
                 return (std::sqrt(s_in - s) + std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
             }
@@ -128,23 +132,30 @@ namespace eos
             inline complex<double> _s_to_phi_12(const complex<double> & s, const complex<double> & s_in) const
             {
                 const complex<double> s_p = _s_p();
-                const double  eps = 1e-14;
+                const double  eps = 1e-10;
 
                 if (std::abs(s - s_p ) < eps)
-                    return 0.0;
+                    return complex<double>(0.0);
 
                 return (- std::sqrt(s_in - s) - std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
             }
 
 
             // The name chi is chosen to be consistent with eq. (4.3) of arxiv:2510.25584
-
             inline complex<double> _chi(const complex<double> & x, const complex<double> & x_L, const complex<double> & x_0) const
             {
                 const complex<double> A = (x * power_of<2>(x_L - 1.0) - x_L * power_of<2>(x - 1.0)) * power_of<2>(x_0 - 1.0);
                 const complex<double> B = (x_0 * power_of<2>(x_L - 1.0) - x_L * power_of<2>(x_0 - 1.0)) * power_of<2>(x - 1.0);
 
                 return (std::sqrt(A) - std::sqrt(B)) / (std::sqrt(A) + std::sqrt(B));
+            }
+
+            inline complex<double> _chi_inverse(const complex<double> & y, const complex<double> & x_L, const complex<double> & x_0) const
+            {
+                const complex<double> A = power_of<2>(y - 1.0) * power_of<2>(x_L - 1.0) * power_of<2>(x_0 - 1.0);
+                const complex<double> B = 4.0 * x_0 * power_of<2>(y + 1.0) * power_of<2>(x_L - 1.0) - 16.0 * y * x_L * power_of<2>(x_0 - 1.0);
+
+                return (std::sqrt(A + B) - std::sqrt(A)) / (std::sqrt(A + B) + std::sqrt(A));
             }
 
 
@@ -415,9 +426,8 @@ namespace eos
             complex<double> residue(const unsigned & k) const;
             double re_residue_rho() const;
             double im_residue_rho() const;
-            //complex<double> residue_rho_s() const
-            //double re_residue_rho_s() const
-            //double im_residue_rho_s() const
+
+            double root_penalty() const;
 
 
             static std::vector<OptionSpecification>::const_iterator begin_options();

@@ -3214,6 +3214,9 @@ namespace eos
                 make_observable("0->pipi::a3@BHKMNR2026", R"(a_3)", Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::a_3),
 
+                make_observable("0->pipi::root_penalty@BHKMNR2026", R"(\textrm{roots on} (11))", Unit::None(),
+                       &BHKMNR2026FormFactors<VacuumToPiPi>::root_penalty),
+
                 make_observable("0->pipi::realP@BHKMNR2026", R"(\textrm{realP})", Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::realP, std::make_tuple("q2")),
 

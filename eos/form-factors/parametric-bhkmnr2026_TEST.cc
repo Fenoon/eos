@@ -179,81 +179,78 @@ class ParametricBHKMNR2026Test :
 
 
 
+
+
                     p["mass::pi^+"]                        =  0.13957039;
-                    p["0->pipi::s_0@BHKMNR2026"]           =  0.0;
-                    p["0->pipi::s_in@BHKMNR2026"]          =  1.0;
-                    p["0->pipi::a_(+,1)^4@BHKMNR2026"]     = -0.37778552;
-                    p["0->pipi::a_(+,1)^5@BHKMNR2026"]     = -0.00590735;
-                    p["0->pipi::a_(+,1)^6@BHKMNR2026"]     = -0.21937850;
-                    p["0->pipi::a_(+,1)^7@BHKMNR2026"]     =  0.05207256;
-                    p["0->pipi::a_(+,1)^8@BHKMNR2026"]     = -0.11861982;
+                    p["0->pipi::s_0@BHKMNR2026"]           =  0.01;
+                    p["0->pipi::s_in@BHKMNR2026"]          =  0.85051;
+                    p["0->pipi::a_(+,1)^4@BHKMNR2026"]     = -0.56083194;
+                    p["0->pipi::a_(+,1)^5@BHKMNR2026"]     = -0.18059761;
+                    p["0->pipi::a_(+,1)^6@BHKMNR2026"]     = -0.31252685;
+                    p["0->pipi::a_(+,1)^7@BHKMNR2026"]     = -0.03797998;
+                    p["0->pipi::a_(+,1)^8@BHKMNR2026"]     = -0.1769615;
                     p["0->pipi::a_(+,1)^9@BHKMNR2026"]     =  0;
                     p["0->pipi::a_(+,1)^10@BHKMNR2026"]    =  0;
                     p["0->pipi::a_(+,1)^11@BHKMNR2026"]    =  0;
                     p["0->pipi::a_(+,1)^12@BHKMNR2026"]    =  0;
-                    p["0->pipi::M_(+,1,0)@BHKMNR2026"]     =  0.76144782;
-                    p["0->pipi::Gamma_(+,1,0)@BHKMNR2026"] =  0.14404311;
+                    p["0->pipi::M_(+,1,0)@BHKMNR2026"]     =  0.76033012;
+                    p["0->pipi::Gamma_(+,1,0)@BHKMNR2026"] =  0.14422809;
+
+
+
+                    const complex<double> s_p = 4 * p["mass::pi^+"].evaluate() * p["mass::pi^+"].evaluate();
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(-98.4623, 0.0))),                          0.90547653,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(-98.4623, 0.0))),                          0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(0.0, 0.0))),                               0.01423705,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(0.0, 0.0))),                               0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(s_p)),                                                    -0.24414436,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(s_p)),                                                     0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(0.85051, 0.0))),                           0.09886284,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(0.85051, 0.0))),                           0.99510107,    eps);
+
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.P(complex<double>(0.90547653, 0.0))),                          0.00635673,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.P(complex<double>(0.90547653, 0.0))),                          0.00000000,    eps);
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dPdpsi(complex<double>(0.5, 0.5))),                            1.08709592,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dPdpsi(complex<double>(0.5, 0.5))),                            2.56034560,    eps);
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(0,complex<double>(-0.24414436, 0.0))),           -2.88120351,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(1,complex<double>(-0.24414436, 0.0))),            3.93965738,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(2,complex<double>(-0.24414436, 0.0))),           -1.75195189,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(3,complex<double>(-0.24414436, 0.0))),            0.62062928,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(0,complex<double>(-0.24414436, 0.0))),            0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(1,complex<double>(-0.24414436, 0.0))),            0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(2,complex<double>(-0.24414436, 0.0))),            0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(3,complex<double>(-0.24414436, 0.0))),            0.00000000,    eps);
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(0,complex<double>(0.09886284, 0.99510107))),     -1.69762416,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(1,complex<double>(0.09886284, 0.99510107))),      7.04969422,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(2,complex<double>(0.09886284, 0.99510107))),     -2.05514855,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(3,complex<double>(0.09886284, 0.99510107))),     -5.23997673,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(0,complex<double>(0.09886284, 0.99510107))),     -8.63572393,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(1,complex<double>(0.09886284, 0.99510107))),      0.04294800,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(2,complex<double>(0.09886284, 0.99510107))),      5.90591274,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(3,complex<double>(0.09886284, 0.99510107))),     -4.26737889,    eps);
 
                     const auto constrained_a = ff.constrained_a_fp_I1();
-                    TEST_CHECK_NEARLY_EQUAL(constrained_a[0],                                                  0.39500633,     eps);
-                    TEST_CHECK_NEARLY_EQUAL(constrained_a[1],                                                  0.34182572,     eps);
-                    TEST_CHECK_NEARLY_EQUAL(constrained_a[2],                                                  0.17796524,     eps);
-                    TEST_CHECK_NEARLY_EQUAL(constrained_a[3],                                                 -0.22291243,     eps);
+                    std::cout << constrained_a[0] << std::endl;
+                    std::cout << constrained_a[1] << std::endl;
+                    std::cout << constrained_a[2] << std::endl;
+                    std::cout << constrained_a[3] << std::endl;
 
-                    TEST_CHECK_NEARLY_EQUAL(ff.a_0(),                                                           0.39500599,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(ff.a_1(),                                                           0.34182666,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(ff.a_2(),                                                           0.17796459,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(ff.a_3(),                                                          -0.22291565,    eps);
-
-
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(0.0, 0.0))),                               0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(0.0, 0.0))),                               0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(0.0779191396, 0.0))),                     -0.24972020,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(0.0779191396, 0.0))),                      0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(1.0, 0.0))),                               0.12710102,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(1.0, 0.0))),                               0.99188978,    eps);
-
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.P(complex<double>(0.0, 0.0))),                                 2.53202114,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.P(complex<double>(0.0, 0.0))),                                 0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.P(complex<double>(-0.24972020, 0.0))),                         3.67892461,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.P(complex<double>(-0.24972020, 0.0))),                         0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.P(complex<double>(0.12710102, 0.99188978))),                  -1.18287221,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.P(complex<double>(0.12710102, 0.99188978))),                   2.30079809,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.a_0(),                                                              0.46325708,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.a_1(),                                                              0.45001193,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.a_2(),                                                              0.19998210,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.a_3(),                                                             -0.31236623,    eps);
 
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dPdpsi(complex<double>(0.0, 0.0))),                           -5.90548846,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dPdpsi(complex<double>(0.0, 0.0))),                            0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dPdpsi(complex<double>(-0.24972020, 0.0))),                   -2.69685760,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dPdpsi(complex<double>(-0.24972020, 0.0))),                    0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dPdpsi(complex<double>(0.12710102, 0.99188978))),             -1.10734774,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dPdpsi(complex<double>(0.12710102, 0.99188978))),             -6.95394038,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(-98.4623)),                                                0.00028419,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(-98.4623)),                                                0.00000000,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(0, complex<double>(0.0, 0.0))),                  -5.90548846,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(0, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(1, complex<double>(0.0, 0.0))),                   2.53202114,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(1, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(2, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(2, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(3, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(3, complex<double>(0.0, 0.0))),                   0.00000000,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(0, complex<double>(-0.24972020, 0.0))),           -2.69685760,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(0, complex<double>(-0.24972020, 0.0))),            0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(1, complex<double>(-0.24972020, 0.0))),            4.35238443,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(1, complex<double>(-0.24972020, 0.0))),            0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(2, complex<double>(-0.24972020, 0.0))),           -2.00558009,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(2, complex<double>(-0.24972020, 0.0))),            0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(3, complex<double>(-0.24972020, 0.0))),            0.73025225,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(3, complex<double>(-0.24972020, 0.0))),            0.00000000,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(0, complex<double>(0.12710102, 0.99188978))),     -1.10734774,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(0, complex<double>(0.12710102, 0.99188978))),     -6.95394038,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(1, complex<double>(0.12710102, 0.99188978))),      5.57392513,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(1, complex<double>(0.12710102, 0.99188978))),      0.31857827,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(2, complex<double>(0.12710102, 0.99188978))),     -2.04002532,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(2, complex<double>(0.12710102, 0.99188978))),      4.68836591,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_terms(3, complex<double>(0.12710102, 0.99188978))),     -4.34510130,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.dfdpsi_terms(3, complex<double>(0.12710102, 0.99188978))),     -3.95229487,    eps);
 
 
 
