@@ -515,7 +515,7 @@ namespace eos
 
         // Fill the root array with values on the second Riemann sheet
         std::array<complex<double>, 12> roots;
-        roots.fill(-1.0);
+        roots.fill(-2.0);
         // Find the roots of the reciprocal adjoint polynomial since a_0 != 0 is less likely
         double adjoint_roots[24];
         gsl_poly_complex_solve(reversed_a.data(), 13, _poly_workspace, adjoint_roots);
@@ -535,11 +535,7 @@ namespace eos
         {
             if (abs(r) < 1.0)
             {
-                const complex<double> phi_root = _chi_inverse(r, _s_to_phi_21(_s_m(), _s_in()), _s_to_phi_11(_s_0(), _s_in()));
-                if (std::real(phi_root) > 0.0 && std::abs(phi_root) < 1.0)
-                {
-                    penalty += 1.0 / std::abs(phi_root) - 1.0;
-                }
+                penalty += 1.0 / std::abs(r) - 1.0;
             }
         }
 
