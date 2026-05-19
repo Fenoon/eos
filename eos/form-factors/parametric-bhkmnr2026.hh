@@ -25,6 +25,7 @@
 #include <eos/form-factors/mesonic-processes.hh>
 #include <eos/maths/complex.hh>
 #include <eos/maths/power-of.hh>
+#include <eos/utils/diagnostics.hh>
 #include <eos/utils/exception.hh>
 #include <eos/utils/parameters.hh>
 #include <eos/utils/reference-name.hh>
@@ -428,6 +429,9 @@ namespace eos
             double im_residue_rho() const;
 
             double root_penalty() const;
+
+            /* Internal diagnostics */
+            Diagnostics diagnostics() const;
 
 
             static std::vector<OptionSpecification>::const_iterator begin_options();

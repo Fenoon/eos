@@ -542,6 +542,22 @@ namespace eos
         return 1.0 + penalty;
     }
 
+    Diagnostics
+    BHKMNR2026FormFactors<VacuumToPiPi>::diagnostics() const
+    {
+        Diagnostics results;
+        auto P_derivatives = this->_P_derivatives(0.1);
+
+        results.add(Diagnostics::Entry{ std::real(P_derivatives.P1), "Re part of 1st Derivative of P with respect to psi at psi = 0.1" });
+        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P1), "Im part of 1st Derivative of P with respect to psi at psi = 0.1" });
+        results.add(Diagnostics::Entry{ std::real(P_derivatives.P2), "Re part of 2nd Derivative of P with respect to psi at psi = 0.1" });
+        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P2), "Im part of 2nd Derivative of P with respect to psi at psi = 0.1" });
+        results.add(Diagnostics::Entry{ std::real(P_derivatives.P3), "Re part of 3rd Derivative of P with respect to psi at psi = 0.1" });
+        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P3), "Im part of 3rd Derivative of P with respect to psi at psi = 0.1" });
+
+
+        return results;
+    }
 
 
     complex<double>
@@ -593,5 +609,7 @@ namespace eos
     {
         "BHKMR:2025A"_rn
     };
+
+
 
 }

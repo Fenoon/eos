@@ -65,6 +65,23 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK(nullptr != ff);
                 }
 
+                /* Diagnostics */
+                {
+                    Options o{ { "n-resonances"_ok, "1" } };
+                    BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
+                    Diagnostics diagnostics = ff.diagnostics();
+                    static const std::vector<std::pair<double, double>> reference
+                    {
+                        std::make_pair(-3.88578855, eps), // Re part of 1st Derivative of P with respect to psi at psi = 0.1
+                        std::make_pair(0.000000000, eps), // Im part of 1st Derivative of P with respect to psi at psi = 0.1
+                        std::make_pair(-4.29568384, eps), // Re part of 2nd Derivative of P with respect to psi at psi = 0.1
+                        std::make_pair(0.000000000, eps), // Im part of 2nd Derivative of P with respect to psi at psi = 0.1
+                        std::make_pair(70.84256108, eps), // Re part of 3rd Derivative of P with respect to psi at psi = 0.1
+                        std::make_pair(0.000000000, eps), // Im part of 3rd Derivative of P with respect to psi at psi = 0.1
+                    };
+
+                    TEST_CHECK_DIAGNOSTICS(diagnostics, reference);
+                }
 
                 {
                     Options o{ { "n-resonances"_ok, "1" } };
