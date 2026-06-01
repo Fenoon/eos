@@ -364,6 +364,7 @@ namespace eos
             double a_2() const;
             double a_3() const;
             complex<double> psi(const complex<double> & s) const;
+            complex<double> psi22(const complex<double> & s) const;
             complex<double> P(const complex<double> & psi) const;
             double realP(const complex<double> & s) const;
             double imagP(const complex<double> & s) const;

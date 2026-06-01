@@ -134,6 +134,12 @@ namespace eos
         return this->_s_to_psi_11(s);
     }
 
+    complex<double>
+    BHKMNR2026FormFactors<VacuumToPiPi>::psi22(const complex<double> & s) const
+    {
+        return this->_s_to_psi_22(s);
+    }
+
 
     complex<double>
     BHKMNR2026FormFactors<VacuumToPiPi>::P(const complex<double> & psi) const
