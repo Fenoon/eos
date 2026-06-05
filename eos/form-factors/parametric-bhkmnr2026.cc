@@ -134,12 +134,6 @@ namespace eos
         return this->_s_to_psi_11(s);
     }
 
-    complex<double>
-    BHKMNR2026FormFactors<VacuumToPiPi>::psi22(const complex<double> & s) const
-    {
-        return this->_s_to_psi_22(s);
-    }
-
 
     complex<double>
     BHKMNR2026FormFactors<VacuumToPiPi>::P(const complex<double> & psi) const
@@ -338,7 +332,6 @@ namespace eos
         std::copy(_a_fp_I1.cbegin(), _a_fp_I1.cend(), a.begin() + 4);       // copy unconstrained coefficients
 
         return P * this->series(psi, a);
-
     }
 
 
@@ -349,6 +342,8 @@ namespace eos
         static const double eps = 1.0e-14;
         return f_p_21(complex<double>(s, eps));
     }
+
+
 
 
 
@@ -504,66 +499,8 @@ namespace eos
     }
 
 
-    double BHKMNR2026FormFactors<VacuumToPiPi>::root_penalty() const
-    {
-        // prepare expansion coefficients
-        std::array<double, 13> reversed_a;
-        const auto constrained_a = this->constrained_a_fp_I1();
-
-        if (constrained_a[0] < 1e-14)
-        {
-            throw InternalError("Not implemented!"); //TODO
-            return 0.0;
-        }
-
-        std::copy(constrained_a.cbegin(), constrained_a.cend(), reversed_a.rbegin()); // reverse copy constrained coefficients
-        std::copy(_a_fp_I1.cbegin(), _a_fp_I1.cend(), reversed_a.rbegin() + 4);       // reverse copy unconstrained coefficients
-
-        // Fill the root array with values on the second Riemann sheet
-        std::array<complex<double>, 12> roots;
-        roots.fill(-2.0);
-        // Find the roots of the reciprocal adjoint polynomial since a_0 != 0 is less likely
-        double adjoint_roots[24];
-        gsl_poly_complex_solve(reversed_a.data(), 13, _poly_workspace, adjoint_roots);
-
-        // Convert the roots back to our polynomial roots (no need for complex conjugation since the roots are conjugated)
-        for (size_t i = 0; i < 12; ++i)
-        {
-            complex<double> adjoint_root = complex<double>(adjoint_roots[2 * i], adjoint_roots[2 * i + 1]);
-            if (abs(adjoint_root) > 1e-12)
-            {
-                roots[i] = 1.0 / adjoint_root;
-            }
-        }
-
-        double penalty = 0.0;
-        for (auto r: roots)
-        {
-            if (abs(r) < 1.0)
-            {
-                penalty += 1.0 / std::abs(r) - 1.0;
-            }
-        }
-
-        return 1.0 + penalty;
-    }
-
-    Diagnostics
-    BHKMNR2026FormFactors<VacuumToPiPi>::diagnostics() const
-    {
-        Diagnostics results;
-        auto P_derivatives = this->_P_derivatives(0.1);
-
-        results.add(Diagnostics::Entry{ std::real(P_derivatives.P1), "Re part of 1st Derivative of P with respect to psi at psi = 0.1" });
-        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P1), "Im part of 1st Derivative of P with respect to psi at psi = 0.1" });
-        results.add(Diagnostics::Entry{ std::real(P_derivatives.P2), "Re part of 2nd Derivative of P with respect to psi at psi = 0.1" });
-        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P2), "Im part of 2nd Derivative of P with respect to psi at psi = 0.1" });
-        results.add(Diagnostics::Entry{ std::real(P_derivatives.P3), "Re part of 3rd Derivative of P with respect to psi at psi = 0.1" });
-        results.add(Diagnostics::Entry{ std::imag(P_derivatives.P3), "Im part of 3rd Derivative of P with respect to psi at psi = 0.1" });
 
 
-        return results;
-    }
 
 
     complex<double>
@@ -615,7 +552,5 @@ namespace eos
     {
         "BHKMR:2025A"_rn
     };
-
-
 
 }
