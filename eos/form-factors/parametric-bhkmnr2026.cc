@@ -536,7 +536,11 @@ namespace eos
             if (abs(r) < 1.0)
             {
                 const complex<double> phi_root = _chi_inverse(r, _s_to_phi_21(_s_m(), _s_in()), _s_to_phi_11(_s_0(), _s_in()));
-                if (std::real(phi_root) > 0.0 && std::abs(phi_root) < 1.0)
+                if (std::real(phi_root) > 0.0 && std::abs(phi_root) < 1.0 )
+                {
+                    penalty += 1.0 / std::abs(phi_root) - 1.0;
+                }
+                else if (std::imag(r) == 0.0) // Remove the zeros of the real axis of the 21 sheet since they are not physical
                 {
                     penalty += 1.0 / std::abs(phi_root) - 1.0;
                 }
