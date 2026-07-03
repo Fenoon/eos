@@ -504,7 +504,7 @@ namespace eos
         std::array<double, 13> reversed_a;
         const auto constrained_a = this->constrained_a_fp_I1();
 
-        if (constrained_a[0] < 1e-14)
+        if (std::abs(constrained_a[0]) < 1e-14)
         {
             throw InternalError("Not implemented!"); //TODO
             return 0.0;
