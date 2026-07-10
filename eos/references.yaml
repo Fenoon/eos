@@ -768,6 +768,14 @@ BaBar:2012D:
   inspire-id: BaBar:2012thb
   title: Branching fraction and form-factor shape measurements of exclusive charmless
     semileptonic B decays, and determination of $|V_{ub}|$
+BaBar:2012E:
+  authors: Lees, J.P. et al.
+  collaboration: BaBar
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:1205.2228
+  inspire-id: BaBar:2012bdw
+  title: Precise Measurement of the $e^+ e^- \to \pi^+\pi^- (\gamma)$ Cross Section with the Initial-State Radiation Method at BABAR
 BaBar:2013A:
   authors: Lees, J.P. et al.
   collaboration: BaBar
@@ -1188,6 +1196,14 @@ CLEO:2008A:
     id: oai:arXiv.org:0801.3418
   inspire-id: CLEO:2008ojp
   title: Measurement of Charm Production Cross Sections in $e^+ e^-$ Annihilation at Energies between 3.97 and 4.26-GeV
+CLEO:2018A:
+  authors: Xiao, T. and Dobbs, S. and Tomaradze, A. and Seth, Kamal K. and Bonvicini, G.
+  collaboration: CLEO
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:1712.04530
+  inspire-id: Xiao:2017dqv
+  title: Precision measurement of the hadronic contribution to the muon anomalous magnetic moment
 CMD2:2003A:
   authors: Akhmetshin, R. R. et al.
   collaboration: CMD-2
@@ -1204,7 +1220,7 @@ CMD2:2006A:
     id: oai:arXiv.org:hep-ex/0610016
   inspire-id: Aulchenko:2006dxz
   title: Measurement of the $e^+ e^- \to \pi^+ \pi^-$ cross section with the CMD-2 detector in the 370 - 520-MeV c.m. energy range
-CMD2:2006B:
+CMD2:2007A:
   authors: Akhmetshin, R. R. et al.
   collaboration: CMD-2
   eprint:
