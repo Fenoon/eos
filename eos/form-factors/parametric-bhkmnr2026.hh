@@ -431,8 +431,6 @@ namespace eos
 
             double root_penalty() const;
 
-            /* Internal diagnostics */
-            Diagnostics diagnostics() const;
 
 
             static std::vector<OptionSpecification>::const_iterator begin_options();

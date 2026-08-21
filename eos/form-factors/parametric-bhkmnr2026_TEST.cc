@@ -65,26 +65,9 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK(nullptr != ff);
                 }
 
-                /* Diagnostics */
-                {
-                    Options o{ { "n-resonances"_ok, "1" } };
-                    BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
-                    Diagnostics diagnostics = ff.diagnostics();
-                    static const std::vector<std::pair<double, double>> reference
-                    {
-                        std::make_pair(-3.88578855, eps), // Re part of 1st Derivative of P with respect to psi at psi = 0.1
-                        std::make_pair(0.000000000, eps), // Im part of 1st Derivative of P with respect to psi at psi = 0.1
-                        std::make_pair(-4.29568384, eps), // Re part of 2nd Derivative of P with respect to psi at psi = 0.1
-                        std::make_pair(0.000000000, eps), // Im part of 2nd Derivative of P with respect to psi at psi = 0.1
-                        std::make_pair(70.84256108, eps), // Re part of 3rd Derivative of P with respect to psi at psi = 0.1
-                        std::make_pair(0.000000000, eps), // Im part of 3rd Derivative of P with respect to psi at psi = 0.1
-                    };
-
-                    TEST_CHECK_DIAGNOSTICS(diagnostics, reference);
-                }
 
                 {
-                    Options o{ { "n-resonances"_ok, "1" } };
+                    Options o{ { "n-resonances"_ok, "1"_ov } };
                     BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
 
                     const complex<double> s_p = 4 * p["mass::pi^+"].evaluate() * p["mass::pi^+"].evaluate();
@@ -186,7 +169,7 @@ class ParametricBHKMNR2026Test :
                 p["0->pipi::Gamma_(+,1,2)@BHKMNR2026"] =  0.25;
 
                 {
-                    Options o{ { "n-resonances"_ok, "3" } };
+                    Options o{ { "n-resonances"_ok, "3"_ov } };
                     BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
 
                     TEST_CHECK_NEARLY_EQUAL(real(ff.psi22(complex<double>(2.10622500,-0.58600000))),            0.84434702,    eps);
