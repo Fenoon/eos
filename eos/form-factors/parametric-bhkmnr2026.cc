@@ -102,6 +102,9 @@ namespace eos
         if (_poly_workspace == nullptr)
             throw std::bad_alloc();
 
+        //should not be as below?
+        //_switch_I[0] = (_opt_I.value() == Isospin::zero);
+        //_switch_I[1] = (_opt_I.value() == Isospin::one);
         _switch_I[0] = (_opt_I.value() && Isospin::zero);
         _switch_I[1] = (_opt_I.value() && Isospin::one);
     }
@@ -171,9 +174,21 @@ namespace eos
     }
 
     complex<double>
-    BHKMNR2026FormFactors<VacuumToPiPi>::dfdpsi_terms(const unsigned k, const complex<double> & psi) const
+    BHKMNR2026FormFactors<VacuumToPiPi>::dQdpsi(const complex<double> & psi) const
+    {
+        return this->_dQdpsi(psi);
+    }
+
+    complex<double>
+    BHKMNR2026FormFactors<VacuumToPiPi>::dfdpsi_terms_I1(const unsigned k, const complex<double> & psi) const
     {
         return this->_dfdpsi_terms_I1(k, psi);
+    }
+
+    complex<double>
+    BHKMNR2026FormFactors<VacuumToPiPi>::dfdpsi_terms_I0(const unsigned k, const complex<double> & psi) const
+    {
+        return this->_dfdpsi_terms_I0(k, psi);
     }
 
     complex<double>
@@ -182,7 +197,7 @@ namespace eos
         complex<double> series    = 0.0;
         complex<double> psi_power = 1.0;
 
-        for (auto k = 0u; k < 12; k++)
+        for (auto k = 0u; k < a.size(); k++)
         {
             series    += a[k] * psi_power;
             psi_power *= psi;
@@ -196,8 +211,8 @@ namespace eos
     {
         const complex<double> psi_p  = _s_to_psi_11(_s_p());
         const complex<double> psi_in = _s_to_psi_11(_s_in());
-        const complex<double> psi_0  = _s_to_psi_11(_s_0());
-        const complex<double> P0     = _P(0.0);
+        const complex<double> psi_0  = _s_to_psi_11(complex<double>(0.0, 0.0));
+        const complex<double> P0     = _P(psi_0);
 
         // Solve the system M.{a0, a1, a2, a3} = L
         // Fill M
@@ -262,8 +277,8 @@ namespace eos
     {
         const complex<double> psi_p  = _s_to_psi_11(_s_p());
         const complex<double> psi_in = _s_to_psi_11(_s_in());
-        const complex<double> psi_0  = _s_to_psi_11(_s_0());
-        const complex<double> Q0     = _Q(0.0);
+        const complex<double> psi_0 = _s_to_psi_11(complex<double>(0.0, 0.0));
+        const complex<double> Q0    = _Q(psi_0);
 
         // Solve the system M.{a0, a1, a2, a3} = L
         // Fill M
@@ -404,86 +419,70 @@ namespace eos
         return partial_wave(complex<double>(s, eps));
     }
 
-    // TODO
-    std::array<complex<double>, 2>
-    BHKMNR2026FormFactors<VacuumToPiPi>::scattering_lenght_parameters() const
+
+    std::array<complex<double>, 4u>
+    BHKMNR2026FormFactors<VacuumToPiPi>::scattering_length_parameters() const
     {
-        const complex<double> s_p   = this->_s_p();
-        const complex<double> f_p   = this->f_p(s_p);
-        const complex<double> psi_p = this->_s_to_psi_11(s_p);
-        const complex<double> P     = this->_P(psi_p);
+        const complex<double> psi_p = this->_s_to_psi_11(this->_s_p());
 
-        const auto derivs = this->_P_derivatives(psi_p);
-        const complex<double> P1 = derivs.P1;
-        const complex<double> P2 = derivs.P2;
-        const complex<double> P3 = derivs.P3;
+        std::array<double, 13u> a_I1{};
 
-        // prepare expansion coefficients
-        std::array<double, 13> a;
-        const auto constrained_a = this->constrained_a_fp_I1();
-        std::copy(constrained_a.cbegin(), constrained_a.cend(), a.begin()); // copy constrained coefficients
-        std::copy(_a_fp_I1.cbegin(), _a_fp_I1.cend(), a.begin() + 4);       // copy unconstrained coefficients
+        const auto constrained_a_I1 = this->constrained_a_fp_I1();
 
-        complex<double> psi_k   = 1.0;
-        complex<double> psi_km1 = 0.0;
-        complex<double> psi_km2 = 0.0;
-        complex<double> psi_km3 = 0.0;
+        std::copy( constrained_a_I1.cbegin(), constrained_a_I1.cend(), a_I1.begin());
 
-        complex<double> S  = 0.0; // S = \sum a_k psi^k
-        complex<double> S1 = 0.0; // S1 = \sum a_k k psi^(k-1)
-        complex<double> S2 = 0.0; // S2 = \sum a_k k (k-1) psi^(k-2)
-        complex<double> S3 = 0.0; // S3 = \sum a_k k (k-1) (k-2) psi^(k-3)
-
-        for (auto k = 0u; k < a.size(); k++)
+        for (auto i = 0u; i < _a_fp_I1.size(); ++i)
         {
-            S  += a[k] * psi_k;
-            S1 += a[k] * k * psi_km1;
-            S2 += a[k] * k * (k - 1) * psi_km2;
-            S3 += a[k] * k * (k - 1) * (k - 2) * psi_km3;
-
-            psi_km3 = psi_km2;
-            psi_km2 = psi_km1;
-            psi_km1 = psi_k;
-            psi_k  *= psi_p;
+            a_I1[i + 4u] = _a_fp_I1[i]();
         }
 
-        const complex<double> f2 = P * S2 + 2.0 * P1 * S1 + P2 * S;                 //d2f/dpsi2 at psi_p
-        const complex<double> f3 = P * S3 + 3.0 * P1 * S2 + 3.0 * P2 * S1 + P3 * S; //d3f/dpsi3 at psi_p
+        const FormFactorDerivatives f_I1 = this->_f_I1_derivatives(psi_p, a_I1);
 
-        return {f2 / f_p, f3 / f_p};
+        FormFactorDerivatives multiplier = { static_cast<double>(_switch_I[1]), 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        if (_switch_I[0])
+        {
+            std::array<double, 13u> a_I0{};
+
+            const auto constrained_a_I0 = this->constrained_a_fp_I0();
+
+            std::copy( constrained_a_I0.cbegin(), constrained_a_I0.cend(), a_I0.begin());
+
+        for (auto i = 0u; i < _a_fp_I0.size(); ++i)
+        {
+            a_I0[i + 4u] = _a_fp_I0[i]();
+        }
+
+        const FormFactorDerivatives f_I0 = this->_f_I0_derivatives(psi_p, a_I0);
+
+        multiplier.F0 += f_I0.F0;
+        multiplier.F1  = f_I0.F1;
+        multiplier.F2  = f_I0.F2;
+        multiplier.F3  = f_I0.F3;
+        multiplier.F4  = f_I0.F4;
+        multiplier.F5  = f_I0.F5;
+    }
+
+    const FormFactorDerivatives f_full =
+        this->_product_derivatives(f_I1, multiplier);
+
+    return {
+        f_full.F2 / f_full.F0,
+        f_full.F3 / f_full.F0,
+        f_full.F4 / f_full.F0,
+        f_full.F5 / f_full.F0
+        };
     }
 
 
     //This function will be used to compute charge radius of pion
-    complex<double>
-    BHKMNR2026FormFactors<VacuumToPiPi>::dfdpsi_11(const complex<double> & s) const
+    complex<double> BHKMNR2026FormFactors<VacuumToPiPi>::dfdpsi_11( const complex<double> & s) const
     {
-        const complex<double> psi = this->_s_to_psi_11(s);
-        const complex<double> P   = this->_P(psi);
-        const complex<double> P1  = this->_dPdpsi(psi); //first derivative of P with respect to psi
+        const complex<double> psi = _s_to_psi_11(s);
 
-        // prepare expansion coefficients
-        std::array<double, 13> a;
-        const auto constrained_a = this->constrained_a_fp_I1();
-        std::copy(constrained_a.cbegin(), constrained_a.cend(), a.begin()); // copy constrained coefficients
-        std::copy(_a_fp_I1.cbegin(), _a_fp_I1.cend(), a.begin() + 4);       // copy unconstrained coefficients
-
-        complex<double> psi_k    = 1.0;
-        complex<double> psi_km1  = 0.0;
-        complex<double> S        = 0.0; // S = \sum a_k psi^k
-        complex<double> S1       = 0.0; // S1 = \sum a_k k psi^(k-1)
-
-        for (auto k = 0u; k < a.size(); k++)
-        {
-            S  += a[k] * psi_k;
-            S1 += a[k] * k * psi_km1;
-
-            psi_km1 = psi_k;
-            psi_k  *= psi;
-        }
-
-        return P1 * S + P * S1;
+        return _f_p_derivatives(psi).F1;
     }
+
 
     double BHKMNR2026FormFactors<VacuumToPiPi>::dispersive_integrand(const double & x) const
     {
@@ -504,8 +503,9 @@ namespace eos
         return integrate<1, 1>(f, 0, 1, cubature::Config().epsrel(1.0e-5));
     }
 
-    // Todo
-    complex<double> BHKMNR2026FormFactors<VacuumToPiPi>::residue(const unsigned & k) const
+
+    //This function will be used to compute rho-pipi and rho-gamma coupling that we can compare with chpt calculations
+    complex<double> BHKMNR2026FormFactors<VacuumToPiPi>::residue_I1(const unsigned & k) const
     {
         // prepare expansion coefficients
         std::array<double, 13> a;
@@ -522,29 +522,13 @@ namespace eos
 
     double BHKMNR2026FormFactors<VacuumToPiPi>::re_residue_rho() const
     {
-        return std::real(this->residue(0u));
+        return std::real(this->residue_I1(0u));
     }
 
     double BHKMNR2026FormFactors<VacuumToPiPi>::im_residue_rho() const
     {
-        return std::imag(this->residue(0u));
+        return std::imag(this->residue_I1(0u));
     }
-
-    //complex<double> BHKMNR2026FormFactors<VacuumToPiPi>::residue_rho_s() const
-    //{
-    //    const complex<double> s_rho = power_of<2>(complex<double>(this->_M_fp_I1[0u](), -this->_G_fp_I1[0u]()/2));
-    //   return this->residue(0u) ;
-    //}
-
-    //double BHKMNR2026FormFactors<VacuumToPiPi>::re_residue_rho_s() const
-    //{
-    //    return std::real(this->residue_rho_s());
-    //}
-
-    //double BHKMNR2026FormFactors<VacuumToPiPi>::im_residue_rho_s() const
-    //{
-    //    return std::imag(this->residue_rho_s());
-    //}
 
 
     double BHKMNR2026FormFactors<VacuumToPiPi>::root_penalty() const
