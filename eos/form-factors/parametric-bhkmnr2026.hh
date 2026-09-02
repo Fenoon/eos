@@ -316,6 +316,7 @@ namespace eos
                 return result;
             }
 
+            // The four following functions will be used to compute the constrained a's
             inline complex<double> _dPdpsi(const complex<double> & psi) const
             {
                 const std::size_t num_resonances_I1 = stoi(_n_resonances_I1.value());
@@ -358,7 +359,6 @@ namespace eos
                 return -Q_val * sum;
             }
 
-            // The following two functions will be used to compute the constrained a's
             inline complex<double> _dfdpsi_terms_I1(const unsigned k, const complex<double> & psi) const
             {
                 const complex<double> dP_val = _dPdpsi(psi);
@@ -389,7 +389,7 @@ namespace eos
                 }
             }
 
-            // Value and derivatives of P with respect to psi. This function will be used to find scattering lenght
+            // Value and derivatives of P with respect to psi. This function will be used to find scattering lenght parameters
             // Do not evaluate at, or close to, psi = +/- 1
             struct PDerivatives
             {
@@ -530,81 +530,81 @@ namespace eos
             }
 
 
-            struct SeriesDerivatives
+        /*
+        * Stores a function value and its first five ordinary derivatives with respect to psi:
+        *
+        *     Fk = d^k F / d psi^k.
+        *
+        * These are derivatives, not Taylor coefficients; the corresponding Taylor term is Fk / k!.
+        */
+        struct FormFactorDerivatives
+        {
+            complex<double> F0;
+            complex<double> F1;
+            complex<double> F2;
+            complex<double> F3;
+            complex<double> F4;
+            complex<double> F5;
+        };
+
+
+        /*
+        * Computes the value and first five derivatives of the series
+        *
+        *     S(psi) = sum_k a[k] psi^k.
+        *
+        * This is used for both the I = 1 and I = 0 expansions.
+        */
+        inline FormFactorDerivatives _series_derivatives( const complex<double> & psi, const std::array<double, 13u> & a) const
+        {
+            std::array<complex<double>, 13u> psi_power;
+
+            psi_power[0] = 1.0;
+
+            for (auto k = 1u; k < psi_power.size(); ++k)
             {
-                complex<double> S0;
-                complex<double> S1;
-                complex<double> S2;
-                complex<double> S3;
-                complex<double> S4;
-                complex<double> S5;
-            };
-
-            inline SeriesDerivatives _series_derivatives(const complex<double> & psi,const std::array<double, 13u> & a) const
-            {
-                std::array<complex<double>, 13u> psi_power;
-
-                psi_power[0] = 1.0;
-
-                for (auto k = 1u; k < psi_power.size(); ++k)
-                {
-                    psi_power[k] = psi_power[k - 1u] * psi;
-                }
-
-                SeriesDerivatives result;
-
-                result.S0 = 0.0;
-                result.S1 = 0.0;
-                result.S2 = 0.0;
-                result.S3 = 0.0;
-                result.S4 = 0.0;
-                result.S5 = 0.0;
-
-                for (auto k = 0u; k < a.size(); ++k)
-                {
-                    result.S0 += a[k] * psi_power[k];
-
-                    if (k >= 1u)
-                    {
-                        result.S1 += a[k] * static_cast<double>(k) * psi_power[k - 1u];
-                    }
-
-                    if (k >= 2u)
-                    {
-                        result.S2 += a[k] * static_cast<double>(k * (k - 1u)) * psi_power[k - 2u];
-                    }
-
-                    if (k >= 3u)
-                    {
-                        result.S3 += a[k] * static_cast<double>(k * (k - 1u) * (k - 2u)) * psi_power[k - 3u];
-                    }
-
-                    if (k >= 4u)
-                    {
-                        result.S4 += a[k] * static_cast<double>(k * (k - 1u) * (k - 2u) * (k - 3u)) * psi_power[k - 4u];
-                    }
-
-                    if (k >= 5u)
-                    {
-                        result.S5 += a[k] * static_cast<double>(k * (k - 1u) * (k - 2u)* (k - 3u) * (k - 4u))* psi_power[k - 5u];
-                    }
-                }
-
-                return result;
+                psi_power[k] = psi_power[k - 1u] * psi;
             }
 
+            FormFactorDerivatives result{};
 
-            struct FormFactorDerivatives
+            for (auto k = 0u; k < a.size(); ++k)
             {
-                complex<double> F0;
-                complex<double> F1;
-                complex<double> F2;
-                complex<double> F3;
-                complex<double> F4;
-                complex<double> F5;
-            };
+                result.F0 += a[k] * psi_power[k];
 
+                if (k >= 1u)
+                {
+                    result.F1 += a[k] * static_cast<double>(k) * psi_power[k - 1u];
+                }
 
+                if (k >= 2u)
+                {
+                    result.F2 += a[k] * static_cast<double>(k * (k - 1u)) * psi_power[k - 2u];
+                }
+
+                if (k >= 3u)
+                {
+                    result.F3 += a[k] * static_cast<double>( k * (k - 1u) * (k - 2u)) * psi_power[k - 3u];
+                }
+
+                if (k >= 4u)
+                {
+                    result.F4 += a[k] * static_cast<double>( k * (k - 1u) * (k - 2u) * (k - 3u)) * psi_power[k - 4u];
+                }
+
+                if (k >= 5u)
+                {
+                    result.F5 += a[k] * static_cast<double>( k * (k - 1u) * (k - 2u) * (k - 3u) * (k - 4u)) * psi_power[k - 5u];
+                }
+            }
+
+            return result;
+        }
+
+        /*
+        * Computes the value and first five derivatives of the product
+        * A(psi) B(psi) using the Leibniz rule.
+        */
             inline FormFactorDerivatives _product_derivatives( const FormFactorDerivatives & A, const FormFactorDerivatives & B) const
             {
                 FormFactorDerivatives result;
@@ -624,31 +624,48 @@ namespace eos
                 return result;
             }
 
+            /*
+            * Computes the derivatives of
+            *
+            *     f_I1(psi) = P(psi) S_I1(psi).
+            */
+
             inline FormFactorDerivatives _f_I1_derivatives( const complex<double> & psi, const std::array<double, 13u> & coefficients) const
             {
-                const auto P = _P_derivatives(psi);
-                const auto S = _series_derivatives(psi, coefficients);
+                const auto P = this->_P_derivatives(psi);
+                const FormFactorDerivatives P_derivatives{ P.P0, P.P1, P.P2, P.P3, P.P4, P.P5};
 
-                const FormFactorDerivatives P_derivatives = { P.P0, P.P1, P.P2, P.P3, P.P4, P.P5 };
+                const FormFactorDerivatives S_derivatives = this->_series_derivatives(psi, coefficients);
 
-                const FormFactorDerivatives S_derivatives = { S.S0, S.S1, S.S2, S.S3, S.S4, S.S5};
-
-                return _product_derivatives(P_derivatives, S_derivatives);
+                return this->_product_derivatives( P_derivatives, S_derivatives);
             }
 
+
+            /*
+            * Computes the derivatives of
+            *
+            *     f_I0(psi) = Q(psi) S_I0(psi).
+            */
 
             inline FormFactorDerivatives _f_I0_derivatives( const complex<double> & psi, const std::array<double, 13u> & coefficients) const
             {
                 const auto Q = _Q_derivatives(psi);
-                const auto S = _series_derivatives(psi, coefficients);
-
                 const FormFactorDerivatives Q_derivatives = { Q.Q0, Q.Q1, Q.Q2, Q.Q3, Q.Q4, Q.Q5 };
 
-                const FormFactorDerivatives S_derivatives = { S.S0, S.S1, S.S2, S.S3, S.S4, S.S5 };
+                const FormFactorDerivatives S_derivatives = this->_series_derivatives(psi, coefficients);
 
-                return _product_derivatives(Q_derivatives, S_derivatives);
+                return this->_product_derivatives( Q_derivatives, S_derivatives);
             }
-
+            /*
+            * Computes the derivatives of the complete form factor
+            *
+            *     f_p(psi) = f_I1(psi)
+            *                [switch_I1 + f_I0(psi)].
+            *
+            * The I = 0 contribution is included only when enabled. These
+            * derivatives are used for the charge radius and for the derivative
+            * ratios entering the threshold parameters a11 and b11.
+            */
 
             inline FormFactorDerivatives _f_p_derivatives(const complex<double> & psi) const
             {

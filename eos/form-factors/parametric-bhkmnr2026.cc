@@ -102,9 +102,6 @@ namespace eos
         if (_poly_workspace == nullptr)
             throw std::bad_alloc();
 
-        //should not be as below?
-        //_switch_I[0] = (_opt_I.value() == Isospin::zero);
-        //_switch_I[1] = (_opt_I.value() == Isospin::one);
         _switch_I[0] = (_opt_I.value() && Isospin::zero);
         _switch_I[1] = (_opt_I.value() && Isospin::one);
     }
