@@ -70,8 +70,8 @@ class ParametricBHKMNR2026Test :
                 {
                     Options o
                     {
-                        { "n-resonances-I1"_ok, "1"},
-                        {"I"_ok, "1" }
+                        { "n-resonances-I1"_ok, "1"_ov},
+                        {"I"_ok, "1"_ov }
                     };
                     BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
 
@@ -86,6 +86,9 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(1.0)),                                                0.99188978,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.psi(complex<double>(0.5, 0.5))),                          0.22651223,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.psi(complex<double>(0.5, 0.5))),                         -0.44265917,    eps);
+
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.psi21(0.0)),                                             -1.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.psi21(0.0)),                                              0.00000000,    eps);
 
 
                     TEST_CHECK_NEARLY_EQUAL(real(ff.P(complex<double>(0, 0))),                                2.53121472,    eps);
@@ -131,14 +134,14 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(0.0)),                                                1.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.0)),                                                0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(0.5)),                                                2.89045313,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.5)),                                               -4.26305734,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.5)),                                                4.26305734,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(complex<double>(0.5, 0.5))),                          0.14423426,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(complex<double>(0.5, 0.5))),                          0.94360544,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(1.0)),                                                0.00000000,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(1.0)),                                                0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(1.0)),                                               -1.45888696,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(1.0)),                                                0.04846081,    eps);
 
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.0)),                                        0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.0)),                                       -0.21320718,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.partial_wave(0.0)),                                        0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.077919139600000)),                          0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.partial_wave(0.077919139600000)),                          0.00000000,    eps);
@@ -166,7 +169,7 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_11(1.0)),                                           0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_11(1.0)),                                           0.00000000,    eps);
 
-                    // Lowering the precision to align with the integration precision 1e-5
+
                     TEST_CHECK_RELATIVE_ERROR(ff.saturation(),                                                 0.398058745,   eps);
 
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p_of_psi(complex<double>(0.5, 0.5))),                   -0.15313783,    eps);
@@ -174,8 +177,8 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p_of_psi(complex<double>(0.7, 0.3))),                    0.00458081,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p_of_psi(complex<double>(0.7, 0.3))),                   -0.13037101,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.5, 0.5),                                     0.35216571,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.7, 0.3),                                     0.13045146,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.5, 0.5),                                     0.12402069,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.7, 0.3),                                     0.01701758,    eps);
                     TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.0, 0.0),                                     1.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi(-1.0, 0.0),                                     0.00000000,    eps);
 
@@ -199,9 +202,9 @@ class ParametricBHKMNR2026Test :
                 {
                     Options o
                     {
-                        { "n-resonances-I1"_ok, "1"},
-                        { "n-resonances-I0"_ok, "1"},
-                        { "I"_ok, "1|0" }
+                        { "n-resonances-I1"_ok, "1"_ov},
+                        { "n-resonances-I0"_ok, "1"_ov},
+                        { "I"_ok, "1|0"_ov }
                     };
                     BHKMNR2026FormFactors<VacuumToPiPi> ff(p, o);
 
@@ -244,13 +247,13 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(0.0)),                                                1.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.0)),                                                0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(0.5)),                                               -8.71739159,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.5)),                                               -13.7120901,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(0.5)),                                                13.7120901,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(complex<double>(0.5, 0.5))),                          0.64534949,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(complex<double>(0.5, 0.5))),                          0.43305815,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p(1.0)),                                               -1.66223092,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(1.0)),                                               -3.41672815,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p(1.0)),                                                3.41672815,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.0)),                                        0.00000000,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.0)),                                       -0.29680620,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.partial_wave(0.0)),                                        0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.partial_wave(0.077919139600000)),                          0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.partial_wave(0.077919139600000)),                          0.00000000,    eps);
@@ -278,7 +281,7 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_11(1.0)),                                           0.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(real(ff.dfdpsi_11(1.0)),                                           0.00000000,    eps);
 
-                    // Lowering the precision to align with the integration precision 1e-5
+
                     TEST_CHECK_RELATIVE_ERROR(ff.saturation(),                                                85.25893239,    eps);
 
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p_of_psi(complex<double>(0.5, 0.5))),                    0.11417128,    eps);
@@ -286,8 +289,8 @@ class ParametricBHKMNR2026Test :
                     TEST_CHECK_NEARLY_EQUAL(real(ff.f_p_of_psi(complex<double>(0.7, 0.3))),                    0.08283404,    eps);
                     TEST_CHECK_NEARLY_EQUAL(imag(ff.f_p_of_psi(complex<double>(0.7, 0.3))),                   -0.23132563,    eps);
 
-                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.5, 0.5),                                     0.58952939,    eps);
-                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.7, 0.3),                                     0.24570923,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.5, 0.5),                                     0.34754491,    eps);
+                    TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.7, 0.3),                                     0.06037303,    eps);
                     TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi( 0.0, 0.0),                                     1.00000000,    eps);
                     TEST_CHECK_NEARLY_EQUAL(ff.abs2_f_p_of_psi(-1.0, 0.0),                                     0.00000000,    eps);
 

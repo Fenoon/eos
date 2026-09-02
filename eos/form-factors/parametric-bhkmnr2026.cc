@@ -156,6 +156,12 @@ namespace eos
     }
 
     complex<double>
+    BHKMNR2026FormFactors<VacuumToPiPi>::psi21(const complex<double> & s) const
+    {
+        return this->_s_to_psi_21(s);
+    }
+
+    complex<double>
     BHKMNR2026FormFactors<VacuumToPiPi>::P(const complex<double> & psi) const
     {
         return this->_P(psi);
@@ -394,22 +400,31 @@ namespace eos
     }
 
 
-    // Todo, fix special cases
+
     complex<double>
-    BHKMNR2026FormFactors<VacuumToPiPi>::partial_wave(const complex<double> & s) const
+    BHKMNR2026FormFactors<VacuumToPiPi>::partial_wave( const complex<double> & s) const
     {
         const complex<double> s_p = this->_s_p();
-        static const double eps   = 1.0e-14;
+        static const double eps = 1.0e-14;
 
-        if (std::abs(s - s_p ) < eps)
+        if (std::abs(s - s_p) < eps)
         {
-            return 0.0;
+        return complex<double>(0.0, 0.0);
         }
 
-        const complex<double> f_p_11 = this->f_p(s);
-        const complex<double> f_p_21 = this->f_p_21(s);
+        complex<double> s_evaluation = s;
 
-        return std::sqrt(s)/ (2.0 * std::sqrt(s_p - s)) * (1.0 - f_p_11 / f_p_21);
+        if (s.real() == 0.0 && s.imag() == 0.0)
+        {
+            s_evaluation = complex<double>(0.0, 1.0e-14);
+        }
+
+        const complex<double> f_p_11 = this->f_p(s_evaluation);
+
+        // Evaluate directly to avoid the near-zero cutoff in f_p_21().
+        const complex<double> f_p_21 = this->f_p_of_psi( this->_s_to_psi_21(s_evaluation));
+
+        return std::sqrt(s_evaluation) / (2.0 * std::sqrt(s_p - s_evaluation)) * (1.0 - f_p_11 / f_p_21);
     }
 
     complex<double>

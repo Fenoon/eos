@@ -115,18 +115,19 @@ namespace eos
                 return (std::sqrt(s_in - s) - std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
             }
 
+
             inline complex<double>
-            _s_to_phi_21(const complex<double> & s, const complex<double> & s_in) const
+            _s_to_phi_21( const complex<double> & s, const complex<double> & s_in) const
             {
                 const complex<double> s_p = _s_p();
-                const double          eps = 1e-14;
+                static const double eps = 1.0e-14;
 
                 if (std::abs(s - s_p) < eps)
                 {
                     return complex<double>(0.0, 0.0);
                 }
 
-                return (-std::sqrt(s_in - s) + std::sqrt(s_in - s_p)) / std::sqrt(s_p - s);
+                return -std::sqrt(s_p - s) /(std::sqrt(s_in - s_p) + std::sqrt(s_in - s));
             }
 
             inline complex<double>
@@ -741,6 +742,7 @@ namespace eos
             std::array<double, 4u> constrained_a_fp_I0() const;
 
             complex<double> psi(const complex<double> & s) const;
+            complex<double> psi21(const complex<double> & s) const;
             complex<double> P(const complex<double> & psi) const;
             complex<double> Q(const complex<double> & psi) const;
             complex<double> dPdpsi(const complex<double> & psi) const;
