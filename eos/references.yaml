@@ -2508,6 +2508,13 @@ NT:2011A:
     id: oai:arXiv.org:1109.6786
   inspire-id: Nishikawa:2011qk
   title: QCD Sum Rules for Quark-Gluon Three-Body Components in the B Meson
+OPAL:1999A:
+  authors: Ackerstaff, K. and others
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:9808019
+  inspire-id: OPAL:1998rrm
+  title: Measurement of the strong coupling constant alpha(s) and the vector and axial vector spectral functions in hadronic tau decays
 PDG:2008A:
   authors: Amsler, C. et al.
   collaboration: Particle Data Group
