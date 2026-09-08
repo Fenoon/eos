@@ -2758,6 +2758,8 @@ namespace eos
             R"(The specific parametrization can be chosen via the "form-factors" option.)",
             { make_form_factor_adapter("0->pipi::Abs{f_+}^2(q2)", R"(|f_+^{0\to \pi\pi}(q^2)|^2)", &FormFactors<VacuumToPP>::abs2_f_p, std::make_tuple("q2")),
 
+              make_form_factor_adapter("0->pipi::Abs{f_+}^2(q2_min,q2_max)", R"(\langle|f_+^{0\to \pi\pi}(q^2)|^2\rangle)", &FormFactors<VacuumToPP>::abs2_f_p_average, std::make_tuple("q2_min", "q2_max")),
+
               make_form_factor_adapter("0->pipi::Arg{f_+}(q2)", R"(\textrm{arg}(f_+^{0\to\pi\pi}(q^2)))", &FormFactors<VacuumToPP>::arg_f_p, std::make_tuple("q2")),
 
               make_form_factor_adapter("0->pipi::Re{f_+}(Re{q2},Im{q2})",
@@ -2794,7 +2796,7 @@ namespace eos
                         &KKRvD2024FormFactors<VacuumToPiPi>::saturation),
 
               make_observable("0->pipi::Abs{f_+}^2(Re{psi},Im{psi})@BHKMNR2026", R"(|f_+^{0\to\pi\pi}(\psi)|^2)", Unit::None(),
-                        &BHKMNR2026FormFactors<VacuumToPiPi>::abs2_f_p_of_psi, std::make_tuple("Re{psi}", "Im{psi}")),
+                        &BHKMNR2026FormFactors<VacuumToPiPi>::abs2_f_p_of_psi, std::make_tuple("q2_{min}", "q2_{min}")),
 
               make_observable("0->pipi::Arg{f_+}(Re{psi},Im{psi})@BHKMNR2026", R"(\textrm{Arg}(f_+^{0\to\pi\pi}(\psi)))", Unit::None(),
                         &BHKMNR2026FormFactors<VacuumToPiPi>::arg_f_p_of_psi, std::make_tuple("Re{psi}", "Im{psi}")),
